@@ -142,7 +142,9 @@ namespace SymulatorRownaniaLaplacea
         {
             if (flag > 1)
             {
-                workplace.doTheMath();
+                
+
+                workplace.doTheMath(label4);
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
 
                 flag = 0;

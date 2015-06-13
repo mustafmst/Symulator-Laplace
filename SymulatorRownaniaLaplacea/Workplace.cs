@@ -84,6 +84,7 @@ namespace SymulatorRownaniaLaplacea
         {
             granica = new Granica[4];
             licznikWolnychGranic = 0;
+
         }
 
         /// <summary>
@@ -263,17 +264,21 @@ namespace SymulatorRownaniaLaplacea
         }
 
 
-        public void doTheMath()
+        public void doTheMath(System.Windows.Forms.Label l)
         {
             int ileSpelnone = 0;
             int iloscPunktow = ((maxX - minX) - 1) * ((maxY - minY) - 1);
             double[,] tmp1, tmp2;
             tmp2 = new double[(maxX - minX) - 1, (maxY - minY) - 1];
             double t1, t2, t3, t4;
+            int iloscIteracji = 0;
+
             while (ileSpelnone < iloscPunktow)
             {
                 ileSpelnone = 0;
-                
+                l.Text = iloscIteracji.ToString();
+                iloscIteracji++;
+
                 tmp1 = tmp2;
                 tmp2 = new double[(maxX - minX)-1, (maxY - minY)-1];
 
