@@ -99,7 +99,7 @@ namespace SymulatorRownaniaLaplacea
             {
                 if ((e.X > workplace.lewo - 3 && e.X < workplace.lewo + 3)
                                             &&
-                    (e.Y < workplace.gora - 3 && e.Y > workplace.dol + 3))
+                    (e.Y > workplace.gora + 3 && e.Y < workplace.dol - 3))
                 {
                     addingValue a = new addingValue(workplace, "lewo");
                     a.Show();
@@ -107,7 +107,7 @@ namespace SymulatorRownaniaLaplacea
 
                 if ((e.X > workplace.prawo - 3 && e.X < workplace.prawo + 3)
                                             &&
-                    (e.Y < workplace.gora - 3 && e.Y > workplace.dol + 3))
+                    (e.Y > workplace.gora + 3 && e.Y < workplace.dol - 3))
                 {
                     addingValue a = new addingValue(workplace, "prawo");
                     a.Show();
