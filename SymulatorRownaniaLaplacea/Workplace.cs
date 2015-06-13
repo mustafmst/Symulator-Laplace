@@ -109,13 +109,13 @@ namespace SymulatorRownaniaLaplacea
         /// <summary>
         /// test mothod
         /// </summary>
-        public void draw()
+        private void draw()
         {
             for (int x = 0; x < mapaWartosci.Width; x++)
             {
                 for (int y = 0; y < mapaWartosci.Height; y++)
                 {
-                    mapaWartosci.SetPixel(x, y, Color.BlueViolet);
+                    mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)przestrzenRownania[x,y]));
                 }
             }
         }
@@ -188,10 +188,82 @@ namespace SymulatorRownaniaLaplacea
             minY = tmp2;
 
             mapaWartosci = new Bitmap((maxX - minX)-1, (maxY - minY)-1);
-            przestrzenRownania = new double[(maxX - minX)+1, (maxY - minY)+1];
+            przestrzenRownania = new double[(maxX - minX)-1, (maxY - minY)-1];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="t"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private double getValue(double[,] t, int x, int y)
+        {
+            try
+            {
+                return t[x, y];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                if (x < 0)
+                {
+                    return this.LewaGranica;
+                }
+                if (y < 0)
+                {
+                    return this.GornaGranica;
+                }
+                if (x > (maxX - minX) - 1)
+                {
+                    return this.PrawaGranica;
+                }
+                if (y > (maxY - minY) - 1)
+                {
+                    return this.DolnaGranica;
+                }
+            }
+
+            return 0;
         }
 
 
+        public void doTheMath()
+        {
+            int ileSpelnone = 0;
+            int iloscPunktow = ((maxX - minX) - 1) * ((maxY - minY) - 1);
+            double[,] tmp1, tmp2;
+            tmp2 = new double[(maxX - minX) - 1, (maxY - minY) - 1];
+            double t1, t2, t3, t4;
+            while (ileSpelnone < iloscPunktow)
+            {
+                ileSpelnone = 0;
+                
+                tmp1 = tmp2;
+                tmp2 = new double[(maxX - minX)-1, (maxY - minY)-1];
+
+                for (int x = 0; x < ((maxX - minX) - 1); x++)
+                {
+                    for (int y = 0; y < ((maxY - minY) - 1); y++)
+                    {
+                        t1 = getValue(tmp1, x + 1, y);
+                        t2 = getValue(tmp1, x - 1, y);
+                        t3 = getValue(tmp1, x, y + 1);
+                        t4 = getValue(tmp1, x, y - 1);
+
+                        tmp2[x, y] = (t1 + t2 + t3 + t4) / 4;
+
+                        if (tmp2[x, y] - tmp1[x, y] < e)
+                        {
+                            ileSpelnone++;
+                        }
+                    }
+                }
+            }
+
+            przestrzenRownania = tmp2;
+            draw();
+        }
         #endregion
     }
 
