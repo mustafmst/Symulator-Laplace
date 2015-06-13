@@ -148,7 +148,11 @@ namespace SymulatorRownaniaLaplacea
                 
 
                 workplace.doTheMath();
+                g.Clear(Color.White);
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+
+                label3.Text = "ilość iteracji: " + workplace.iteracje;
+                label4.Text = "Obliczenia trwały: " + workplace.czas.Minutes + " minut " + workplace.czas.Seconds + " sekund";
 
                 //flag = 0;
             }

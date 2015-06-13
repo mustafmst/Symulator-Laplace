@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace SymulatorRownaniaLaplacea
 {
     /// <summary>
-    /// 
+    /// Klasa rozwiązująca Laplace'a
     /// </summary>
     public class Workplace
     {
@@ -21,7 +22,8 @@ namespace SymulatorRownaniaLaplacea
         private decimal[,] przestrzenRownania;
         private int maxX, maxY, minX, minY;
         private const decimal e = 0.0001M;
-        int iloscIteracji;
+        private int iloscIteracji;
+        private TimeSpan dlugosc;
         #endregion
 
         #region wlasciwosci
@@ -74,6 +76,8 @@ namespace SymulatorRownaniaLaplacea
                 lewaGranica.potencjal = value;
             }
         }
+        public int iteracje { get { return iloscIteracji; } }
+        public TimeSpan czas { get { return dlugosc; } }
         #endregion
 
         #region metody
@@ -89,12 +93,12 @@ namespace SymulatorRownaniaLaplacea
         }
 
         /// <summary>
-        /// 
+        /// Dodaje jedną granicę (odcinek)
         /// </summary>
-        /// <param name="x1"></param>
-        /// <param name="y1"></param>
-        /// <param name="x2"></param>
-        /// <param name="y2"></param>
+        /// <param name="x1">współrzędna x początku</param>
+        /// <param name="y1">współrzędna y początku</param>
+        /// <param name="x2">współrzędna x końca</param>
+        /// <param name="y2">współrzędna x końca</param>
         public void dodajGranice(int x1, int y1, int x2, int y2)
         {
             if (licznikWolnychGranic < 4)
@@ -109,23 +113,31 @@ namespace SymulatorRownaniaLaplacea
         }
 
         /// <summary>
-        /// test mothod
+        /// Rysowanie wykresu potencjałów
         /// </summary>
         private void draw()
         {
-            int parametr = Int32.MaxValue / (int)(this.przestrzenRownania.Cast<decimal>().Max() - this.przestrzenRownania.Cast<decimal>().Min());
+            int parametr;
+            try
+            {
+                parametr = Int32.MaxValue / (int)(this.przestrzenRownania.Cast<decimal>().Max() - this.przestrzenRownania.Cast<decimal>().Min());
+            }
+            catch (DivideByZeroException e)
+            {
+                parametr = 1;
+            }
             decimal min = this.przestrzenRownania.Cast<decimal>().Min();
             for (int x = 0; x < mapaWartosci.Width; x++)
             {
                 for (int y = 0; y < mapaWartosci.Height; y++)
                 {
-                    mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)(przestrzenRownania[x, y] - min ) * parametr));
+                    mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)(przestrzenRownania[x, y] - min) * parametr));
                 }
             }
         }
 
         /// <summary>
-        /// 
+        /// znajduje oriętacje granic
         /// </summary>
         private void findMaxes()
         {
@@ -198,7 +210,7 @@ namespace SymulatorRownaniaLaplacea
         }
 
         /// <summary>
-        /// 
+        /// przyporządkowuje poszczególne granice do połorzeń: góra, dół, lewo, prawo
         /// </summary>
         private void setPositions()
         {
@@ -229,44 +241,10 @@ namespace SymulatorRownaniaLaplacea
             }
         }
 
-        /*/// <summary>
-        /// 
+        /// <summary>
+        /// Tworzy tablicę z wartościami brzegowymi
         /// </summary>
-        /// <param name="t"></param>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        private double getValue(double[,] t, int x, int y)
-        {
-            try
-            {
-                return t[x, y];
-            }
-            catch (IndexOutOfRangeException e)
-            {
-
-                if (x < 0)
-                {
-                    return this.LewaGranica;
-                }
-                if (y < 0)
-                {
-                    return this.GornaGranica;
-                }
-                if (x > (maxX - minX) - 2)
-                {
-                    return this.PrawaGranica;
-                }
-                if (y > (maxY - minY) - 2)
-                {
-                    return this.DolnaGranica;
-                }
-            }
-
-            return 0;
-        }*/
-
-
+        /// <returns>zwraca 2-wymiarową tablicę tylu decimal</returns>
         private decimal[,] newTab()
         {
             decimal[,] tmp = new decimal[(maxX - minX) + 1, (maxY - minY) + 1];
@@ -285,8 +263,9 @@ namespace SymulatorRownaniaLaplacea
 
                 return tmp;
         }
+
         /// <summary>
-        /// 
+        /// Obliczenia na podstawie danych zawartych w klasie
         /// </summary>
         public void doTheMath()
         {
@@ -297,7 +276,9 @@ namespace SymulatorRownaniaLaplacea
             
             iloscIteracji = 0;
 
-            while (ileSpelnone < iloscPunktow/100)
+            Stopwatch stoper = Stopwatch.StartNew();
+
+            while ((ileSpelnone < iloscPunktow/2 || iloscIteracji<2500) && iloscIteracji < 10000)
             {
                 ileSpelnone = 0;
                 
@@ -320,6 +301,8 @@ namespace SymulatorRownaniaLaplacea
                 }
             }
 
+            stoper.Stop();
+            dlugosc = stoper.Elapsed;
             przestrzenRownania = tmp2;
             draw();
         }
@@ -327,7 +310,7 @@ namespace SymulatorRownaniaLaplacea
     }
 
     /// <summary>
-    /// 
+    /// klasa przechowująca granice
     /// </summary>
     public class Granica
     {
@@ -335,12 +318,12 @@ namespace SymulatorRownaniaLaplacea
         private decimal val;
 
         /// <summary>
-        /// 
+        /// Tworzy granicę (odcinek)
         /// </summary>
-        /// <param name="x1">pierwszego punktu</param>
-        /// <param name="y1">pierwszego punktu</param>
-        /// <param name="x2">drugiego punktu</param>
-        /// <param name="y2">drugiego punktu</param>
+        /// <param name="x1">współrzędna x początku</param>
+        /// <param name="y1">współrzędna y początku</param>
+        /// <param name="x2">współrzędna x końca</param>
+        /// <param name="y2">współrzędna x końca</param>
         public Granica(int x1, int y1, int x2, int y2)
         {
             this.x1 = x1;
