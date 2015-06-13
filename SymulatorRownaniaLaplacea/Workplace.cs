@@ -15,7 +15,7 @@ namespace SymulatorRownaniaLaplacea
 
         #region pola
         private Granica[] granica;
-        private int gornaGranica, dolnaGranica, prawaGranica, lewaGranica;
+        private Granica gornaGranica, dolnaGranica, prawaGranica, lewaGranica;
         private Int16 licznikWolnychGranic;
         private Bitmap mapaWartosci;
         private double[,] przestrzenRownania;
@@ -33,44 +33,44 @@ namespace SymulatorRownaniaLaplacea
         {
             get
             {
-                return granica[gornaGranica].potencjal;
+                return gornaGranica.potencjal;
             }
             set
             {
-                granica[gornaGranica].potencjal = value;
+                gornaGranica.potencjal = value;
             }
         }
         public double DolnaGranica
         {
             get
             {
-                return granica[dolnaGranica].potencjal;
+                return dolnaGranica.potencjal;
             }
             set
             {
-                granica[dolnaGranica].potencjal = value;
+                dolnaGranica.potencjal = value;
             }
         }
         public double PrawaGranica
         {
             get
             {
-                return granica[prawaGranica].potencjal;
+                return prawaGranica.potencjal;
             }
             set
             {
-                granica[prawaGranica].potencjal = value;
+                prawaGranica.potencjal = value;
             }
         }
         public double LewaGranica
         {
             get
             {
-                return granica[lewaGranica].potencjal;
+                return lewaGranica.potencjal;
             }
             set
             {
-                granica[lewaGranica].potencjal = value;
+                lewaGranica.potencjal = value;
             }
         }
         #endregion
@@ -132,25 +132,25 @@ namespace SymulatorRownaniaLaplacea
                 if (granica[i].getX1 > tmp1)
                 {
                     tmp1 = granica[i].getX1;
-                    prawaGranica = i;
+                    
                 }
 
                 if (granica[i].getX2 > tmp1)
                 {
                     tmp1 = granica[i].getX2;
-                    prawaGranica = i;
+                    
                 }
 
                 if (granica[i].getX1 < tmp2)
                 {
                     tmp2 = granica[i].getX1;
-                    lewaGranica = i;
+                    
                 }
 
                 if (granica[i].getX2 < tmp2)
                 {
                     tmp2 = granica[i].getX2;
-                    lewaGranica = i;
+                    
                 }
             }
             maxX = tmp1;
@@ -163,32 +163,66 @@ namespace SymulatorRownaniaLaplacea
                 if (granica[i].getY1 > tmp1)
                 {
                     tmp1 = granica[i].getY1;
-                    dolnaGranica = i;
+                    
                 }
 
                 if (granica[i].getY2 > tmp1)
                 {
                     tmp2 = granica[i].getY2;
-                    dolnaGranica = i;
+                    
                 }
 
                 if (granica[i].getY1 < tmp2)
                 {
                     tmp1 = granica[i].getY1;
-                    gornaGranica = i;
+                    
                 }
 
                 if (granica[i].getY2 < tmp2)
                 {
                     tmp2 = granica[i].getY2;
-                    gornaGranica = i;
+                    
                 }
             }
             maxY = tmp1;
             minY = tmp2;
 
+            setPositions();
+
             mapaWartosci = new Bitmap((maxX - minX)-1, (maxY - minY)-1);
             przestrzenRownania = new double[(maxX - minX)-1, (maxY - minY)-1];
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void setPositions()
+        {
+            foreach (Granica g in granica)
+            {
+                if (g.getX1 == g.getX2)
+                {
+                    if (g.getX1 == maxX)
+                    {
+                        dolnaGranica = g;
+                    }
+                    else
+                    {
+                        gornaGranica = g;
+                    }
+                }
+                else if (g.getY1 == g.getY2)
+                {
+                    if (g.getY1 == maxY)
+                    {
+                        prawaGranica = g;
+                    }
+                    else
+                    {
+                        lewaGranica = g;
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -206,6 +240,7 @@ namespace SymulatorRownaniaLaplacea
             }
             catch (IndexOutOfRangeException e)
             {
+
                 if (x < 0)
                 {
                     return this.LewaGranica;
@@ -214,11 +249,11 @@ namespace SymulatorRownaniaLaplacea
                 {
                     return this.GornaGranica;
                 }
-                if (x > (maxX - minX) - 1)
+                if (x > (maxX - minX) - 2)
                 {
                     return this.PrawaGranica;
                 }
-                if (y > (maxY - minY) - 1)
+                if (y > (maxY - minY) - 2)
                 {
                     return this.DolnaGranica;
                 }
