@@ -61,16 +61,16 @@ namespace SymulatorRownaniaLaplacea
             switch (option)
             {
                 case "gora":
-                    w.GornaGranica = (double)this.numericUpDown1.Value;
+                    w.GornaGranica = this.numericUpDown1.Value;
                     break;
                 case "dol":
-                    w.DolnaGranica = (double)this.numericUpDown1.Value;
+                    w.DolnaGranica = this.numericUpDown1.Value;
                     break;
                 case "prawo":
-                    w.PrawaGranica = (double)this.numericUpDown1.Value;
+                    w.PrawaGranica = this.numericUpDown1.Value;
                     break;
                 case "lewo":
-                    w.LewaGranica = (double)this.numericUpDown1.Value;
+                    w.LewaGranica = this.numericUpDown1.Value;
                     break;
                 default:
                     break;

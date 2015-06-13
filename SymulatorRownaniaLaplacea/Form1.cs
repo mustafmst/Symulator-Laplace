@@ -79,21 +79,24 @@ namespace SymulatorRownaniaLaplacea
                 x2 = e.X;
                 y2 = e.Y;
 
-                workplace.dodajGranice(x1, y1, x1, y2);
-                g.DrawLine(pen, x1, y1, x1, y2);
+                if (x2 != x1 && y2 != y1)
+                {
+                    workplace.dodajGranice(x1, y1, x1, y2);
+                    g.DrawLine(pen, x1, y1, x1, y2);
 
-                workplace.dodajGranice(x1, y2, x2, y2);
-                g.DrawLine(pen, x1, y2, x2, y2);
+                    workplace.dodajGranice(x1, y2, x2, y2);
+                    g.DrawLine(pen, x1, y2, x2, y2);
 
-                workplace.dodajGranice(x2, y2, x2, y1);
-                g.DrawLine(pen, x2, y2, x2, y1);
+                    workplace.dodajGranice(x2, y2, x2, y1);
+                    g.DrawLine(pen, x2, y2, x2, y1);
 
-                workplace.dodajGranice(x2, y1, x1, y1);
-                g.DrawLine(pen, x2, y1, x1, y1);
+                    workplace.dodajGranice(x2, y1, x1, y1);
+                    g.DrawLine(pen, x2, y1, x1, y1);
 
-                label1.Text = "Granice: górna: " + workplace.gora + " dolna: " + workplace.dol + " lewa: " + workplace.lewo + " prawa: " + workplace.prawo;
+                    label1.Text = "Granice: górna: " + workplace.gora + " dolna: " + workplace.dol + " lewa: " + workplace.lewo + " prawa: " + workplace.prawo;
 
-                flag++;
+                    flag++;
+                }
             }
             else
             {
@@ -144,10 +147,10 @@ namespace SymulatorRownaniaLaplacea
             {
                 
 
-                workplace.doTheMath(label4);
+                workplace.doTheMath();
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
 
-                flag = 0;
+                //flag = 0;
             }
         }
 

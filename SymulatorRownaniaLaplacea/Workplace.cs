@@ -18,9 +18,10 @@ namespace SymulatorRownaniaLaplacea
         private Granica gornaGranica, dolnaGranica, prawaGranica, lewaGranica;
         private Int16 licznikWolnychGranic;
         private Bitmap mapaWartosci;
-        private double[,] przestrzenRownania;
+        private decimal[,] przestrzenRownania;
         private int maxX, maxY, minX, minY;
-        private const double e = 10 ^ -6;
+        private const decimal e = 0.0001M;
+        int iloscIteracji;
         #endregion
 
         #region wlasciwosci
@@ -29,7 +30,7 @@ namespace SymulatorRownaniaLaplacea
         public int gora { get { return minY; } }
         public int dol { get { return maxY; } }
         public Bitmap wynik { get { return mapaWartosci; } }
-        public double GornaGranica
+        public decimal GornaGranica
         {
             get
             {
@@ -40,7 +41,7 @@ namespace SymulatorRownaniaLaplacea
                 gornaGranica.potencjal = value;
             }
         }
-        public double DolnaGranica
+        public decimal DolnaGranica
         {
             get
             {
@@ -51,7 +52,7 @@ namespace SymulatorRownaniaLaplacea
                 dolnaGranica.potencjal = value;
             }
         }
-        public double PrawaGranica
+        public decimal PrawaGranica
         {
             get
             {
@@ -62,7 +63,7 @@ namespace SymulatorRownaniaLaplacea
                 prawaGranica.potencjal = value;
             }
         }
-        public double LewaGranica
+        public decimal LewaGranica
         {
             get
             {
@@ -112,11 +113,13 @@ namespace SymulatorRownaniaLaplacea
         /// </summary>
         private void draw()
         {
+            int parametr = Int32.MaxValue / (int)(this.przestrzenRownania.Cast<decimal>().Max() - this.przestrzenRownania.Cast<decimal>().Min());
+            decimal min = this.przestrzenRownania.Cast<decimal>().Min();
             for (int x = 0; x < mapaWartosci.Width; x++)
             {
                 for (int y = 0; y < mapaWartosci.Height; y++)
                 {
-                    mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)przestrzenRownania[x,y]));
+                    mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)(przestrzenRownania[x, y] - min ) * parametr));
                 }
             }
         }
@@ -191,7 +194,7 @@ namespace SymulatorRownaniaLaplacea
             setPositions();
 
             mapaWartosci = new Bitmap((maxX - minX)-1, (maxY - minY)-1);
-            przestrzenRownania = new double[(maxX - minX)-1, (maxY - minY)-1];
+            przestrzenRownania = new decimal[(maxX - minX) - 1, (maxY - minY) - 1];
         }
 
         /// <summary>
@@ -226,7 +229,7 @@ namespace SymulatorRownaniaLaplacea
             }
         }
 
-        /// <summary>
+        /*/// <summary>
         /// 
         /// </summary>
         /// <param name="t"></param>
@@ -261,37 +264,53 @@ namespace SymulatorRownaniaLaplacea
             }
 
             return 0;
+        }*/
+
+
+        private decimal[,] newTab()
+        {
+            decimal[,] tmp = new decimal[(maxX - minX) + 1, (maxY - minY) + 1];
+
+            for (int i = 0; i < (maxX - minX) + 1; i++)
+            {
+                tmp[i, 0] = this.GornaGranica;
+                tmp[i, (maxY - minY)] = this.DolnaGranica;
+            }
+
+            for (int i = 0; i < (maxY - minY) + 1; i++)
+            {
+                tmp[0, i] = LewaGranica;
+                tmp[(maxX - minX), i] = PrawaGranica;
+            }
+
+                return tmp;
         }
-
-
-        public void doTheMath(System.Windows.Forms.Label l)
+        /// <summary>
+        /// 
+        /// </summary>
+        public void doTheMath()
         {
             int ileSpelnone = 0;
             int iloscPunktow = ((maxX - minX) - 1) * ((maxY - minY) - 1);
-            double[,] tmp1, tmp2;
-            tmp2 = new double[(maxX - minX) - 1, (maxY - minY) - 1];
-            double t1, t2, t3, t4;
-            int iloscIteracji = 0;
+            decimal[,] tmp1, tmp2;
+            tmp2 = newTab();
+            
+            iloscIteracji = 0;
 
-            while (ileSpelnone < iloscPunktow)
+            while (ileSpelnone < iloscPunktow/100)
             {
                 ileSpelnone = 0;
-                l.Text = iloscIteracji.ToString();
+                
                 iloscIteracji++;
 
                 tmp1 = tmp2;
-                tmp2 = new double[(maxX - minX)-1, (maxY - minY)-1];
+                tmp2 = newTab();
 
-                for (int x = 0; x < ((maxX - minX) - 1); x++)
+                for (int x = 1; x < (maxX - minX); x++)
                 {
-                    for (int y = 0; y < ((maxY - minY) - 1); y++)
+                    for (int y = 1; y < (maxY - minY); y++)
                     {
-                        t1 = getValue(tmp1, x + 1, y);
-                        t2 = getValue(tmp1, x - 1, y);
-                        t3 = getValue(tmp1, x, y + 1);
-                        t4 = getValue(tmp1, x, y - 1);
-
-                        tmp2[x, y] = (t1 + t2 + t3 + t4) / 4;
+                        tmp2[x, y] = (tmp1[x+1,y] + tmp1[x-1,y] + tmp1[x,y+1] + tmp1[x,y-1]) / 4;
 
                         if (tmp2[x, y] - tmp1[x, y] < e)
                         {
@@ -313,7 +332,7 @@ namespace SymulatorRownaniaLaplacea
     public class Granica
     {
         private int x1, y1, x2, y2;
-        private double val;
+        private decimal val;
 
         /// <summary>
         /// 
@@ -337,7 +356,7 @@ namespace SymulatorRownaniaLaplacea
         public int getX2 { get { return x2; } }
         public int getY1 { get { return y1; } }
         public int getY2 { get { return y2; } }
-        public double potencjal
+        public decimal potencjal
         {
             get
             {
