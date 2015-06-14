@@ -17,6 +17,7 @@ namespace SymulatorRownaniaLaplacea
         Int16 flag = 0;
         Workplace workplace;
         Pen pen;
+        SolidBrush brush;
 
         public Form1()
         {
@@ -25,6 +26,7 @@ namespace SymulatorRownaniaLaplacea
             pictureBox1.MouseClick += new MouseEventHandler(this.Picture_MouseClick);
             pictureBox1.MouseMove += new MouseEventHandler(this.Picture_MouseMove);
             pen = new Pen(Color.Black, 3);
+            brush = new SolidBrush(Color.Black); 
         }
 
         /// <summary>
@@ -167,6 +169,17 @@ namespace SymulatorRownaniaLaplacea
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+                
+
+                if (checkBox2.Checked == true)
+                {
+                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                    g.DrawString(workplace.minValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo, (float)workplace.dol + 50), new Size(40, 20)));
+                    g.DrawString(workplace.maxValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo + 200, (float)workplace.dol + 50), new Size(40, 20)));
+                }
+
 
                 label3.Text = "ilość iteracji: " + workplace.iteracje;
                 label4.Text = "Obliczenia trwały: " + workplace.czas.Minutes + " minut " + workplace.czas.Seconds + " sekund";

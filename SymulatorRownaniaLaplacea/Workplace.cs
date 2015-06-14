@@ -24,6 +24,8 @@ namespace SymulatorRownaniaLaplacea
         private const decimal e = 0.0001M;
         private int iloscIteracji;
         private TimeSpan dlugosc;
+        private Bitmap skala;
+        private int maxVal, minVal;
         #endregion
 
         #region wlasciwosci
@@ -76,8 +78,12 @@ namespace SymulatorRownaniaLaplacea
                 lewaGranica.potencjal = value;
             }
         }
+        public Bitmap Skala { get { return skala; } }
         public int iteracje { get { return iloscIteracji; } }
         public TimeSpan czas { get { return dlugosc; } }
+        public int maxValue { get { return maxVal; } }
+        public int minValue { get { return minVal; } }
+
         #endregion
 
         #region metody
@@ -113,11 +119,15 @@ namespace SymulatorRownaniaLaplacea
         }
 
         /// <summary>
-        /// Rysowanie wykresu potencjałów
+        /// Rysowanie wykresu potencjałów i skali
         /// </summary>
         private void draw()
         {
             int parametr;
+            maxVal = (int)this.przestrzenRownania.Cast<decimal>().Max();
+            minVal = (int)this.przestrzenRownania.Cast<decimal>().Min();
+
+
             try
             {
                 parametr = Int32.MaxValue / (int)(this.przestrzenRownania.Cast<decimal>().Max() - this.przestrzenRownania.Cast<decimal>().Min());
@@ -134,6 +144,29 @@ namespace SymulatorRownaniaLaplacea
                     mapaWartosci.SetPixel(x, y, Color.FromArgb((Int32)(przestrzenRownania[x, y] - min) * parametr));
                 }
             }
+
+            skala = new Bitmap(200, 20);
+            int wierszyNaKolor = 200 / (maxVal - minVal);
+            int licznikX = 0;
+            int licznikY = 0;
+
+            
+            for (int i = minVal-minVal; i <= maxVal-minVal; i++)
+            {
+                for (int x = i*wierszyNaKolor; x < (i+1)*wierszyNaKolor; x++)
+                {
+                    licznikX++;
+                    for (int y = 0; y < 20; y++)
+                    {
+                        licznikY++;
+                        if (licznikX < 200)
+                        {
+                            skala.SetPixel(x, y, Color.FromArgb((Int32)(i) * parametr));
+                        }
+                    }
+                }
+            }
+
         }
 
         /// <summary>
@@ -303,11 +336,33 @@ namespace SymulatorRownaniaLaplacea
 
             stoper.Stop();
             dlugosc = stoper.Elapsed;
-            przestrzenRownania = tmp2;
+            przestrzenRownania = this.copyToRes(tmp2);
             draw();
         }
+
+
+        private decimal[,] copyToRes(decimal[,] t)
+        {
+            decimal[,] tmp = new decimal[(maxX - minX) - 1, (maxY - minY) - 1];
+
+            for(int x=1 ; x <(maxX - minX);x++)
+            {
+                for(int y=1;y<(maxY-minY);y++)
+                {
+                    tmp[x-1,y-1]=t[x,y];
+                }   
+
+            }
+
+            return tmp;
+        }
+
         #endregion
     }
+
+    
+
+
 
     /// <summary>
     /// klasa przechowująca granice
