@@ -14,6 +14,7 @@ namespace SymulatorRownaniaLaplacea
     {
         Workplace w;
         string option;
+        Form1 f;
 
 
         public addingValue()
@@ -26,11 +27,12 @@ namespace SymulatorRownaniaLaplacea
         /// </summary>
         /// <param name="w"></param>
         /// <param name="option"></param>
-        public addingValue(Workplace w, string option) : this()
+        public addingValue(Workplace w, string option,Form1 f) : this()
         {
             this.w = w;
             this.option = option;
             this.Text = option;
+            this.f = f;
             
             switch (option)
             {
@@ -75,7 +77,7 @@ namespace SymulatorRownaniaLaplacea
                 default:
                     break;
             }
-
+            f.aktualizacjaPotencjalow();
             this.Dispose();
         }
     }

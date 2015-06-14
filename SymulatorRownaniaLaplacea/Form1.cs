@@ -56,6 +56,7 @@ namespace SymulatorRownaniaLaplacea
             workplace = new Workplace();
             flag = 0;
             label1.Text = "";
+            label5.Text = "Stan: Czeka";
         }
 
         /// <summary>
@@ -93,7 +94,7 @@ namespace SymulatorRownaniaLaplacea
                     workplace.dodajGranice(x2, y1, x1, y1);
                     g.DrawLine(pen, x2, y1, x1, y1);
 
-                    label1.Text = "Granice: górna: " + workplace.gora + " dolna: " + workplace.dol + " lewa: " + workplace.lewo + " prawa: " + workplace.prawo;
+                    aktualizacjaPotencjalow();
 
                     flag++;
                 }
@@ -104,7 +105,7 @@ namespace SymulatorRownaniaLaplacea
                                             &&
                     (e.Y > workplace.gora + 3 && e.Y < workplace.dol - 3))
                 {
-                    addingValue a = new addingValue(workplace, "lewo");
+                    addingValue a = new addingValue(workplace, "lewo",this);
                     a.Show();
                 }
 
@@ -112,7 +113,7 @@ namespace SymulatorRownaniaLaplacea
                                             &&
                     (e.Y > workplace.gora + 3 && e.Y < workplace.dol - 3))
                 {
-                    addingValue a = new addingValue(workplace, "prawo");
+                    addingValue a = new addingValue(workplace, "prawo", this);
                     a.Show();
                 }
 
@@ -120,7 +121,7 @@ namespace SymulatorRownaniaLaplacea
                                             &&
                     (e.X < workplace.prawo - 3 && e.X > workplace.lewo + 3))
                 {
-                    addingValue a = new addingValue(workplace, "gora");
+                    addingValue a = new addingValue(workplace, "gora", this);
                     a.Show();
                 }
 
@@ -128,12 +129,17 @@ namespace SymulatorRownaniaLaplacea
                                             &&
                     (e.X < workplace.prawo - 3 && e.X > workplace.lewo + 3))
                 {
-                    addingValue a = new addingValue(workplace, "dol");
+                    addingValue a = new addingValue(workplace, "dol", this);
                     a.Show();
                 }
             }
 
 
+        }
+
+        public void aktualizacjaPotencjalow()
+        {
+            label1.Text = "Potencjały: góra: " + workplace.GornaGranica + ", dół: " + workplace.DolnaGranica + ", prawo: " + workplace.PrawaGranica + ", lewo:" + workplace.LewaGranica;
         }
 
         /// <summary>
@@ -145,15 +151,26 @@ namespace SymulatorRownaniaLaplacea
         {
             if (flag > 1)
             {
-                
+                label5.Text = "Stan: Pracuje";
 
                 workplace.doTheMath();
                 g.Clear(Color.White);
+                
+                if (checkBox1.Checked == true)
+                {
+                    g.DrawLine(pen, workplace.lewo, workplace.gora, workplace.prawo, workplace.gora);
+                    g.DrawLine(pen, workplace.prawo, workplace.gora, workplace.prawo, workplace.dol);
+                    g.DrawLine(pen, workplace.prawo, workplace.dol, workplace.lewo, workplace.dol);
+                    g.DrawLine(pen, workplace.lewo, workplace.dol, workplace.lewo, workplace.gora);
+                }
+
+                g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+                g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
                 g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
 
                 label3.Text = "ilość iteracji: " + workplace.iteracje;
                 label4.Text = "Obliczenia trwały: " + workplace.czas.Minutes + " minut " + workplace.czas.Seconds + " sekund";
-
+                label5.Text = "Stan: Skończył";
                 //flag = 0;
             }
         }
