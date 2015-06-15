@@ -19,6 +19,9 @@ namespace SymulatorRownaniaLaplacea
         Pen pen;
         SolidBrush brush;
 
+        /// <summary>
+        /// 
+        /// </summary>
         public Form1()
         {
             InitializeComponent();
@@ -47,7 +50,11 @@ namespace SymulatorRownaniaLaplacea
         private void button1_Click(object sender, EventArgs e)
         {
             clear();
+            g = pictureBox1.CreateGraphics();
         }
+
+
+        
 
         /// <summary>
         /// 
@@ -139,6 +146,9 @@ namespace SymulatorRownaniaLaplacea
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void aktualizacjaPotencjalow()
         {
             label1.Text = "Potencjały: góra: " + workplace.GornaGranica + ", dół: " + workplace.DolnaGranica + ", prawo: " + workplace.PrawaGranica + ", lewo:" + workplace.LewaGranica;
@@ -153,38 +163,48 @@ namespace SymulatorRownaniaLaplacea
         {
             if (flag > 1)
             {
-                label5.Text = "Stan: Pracuje";
-
-                workplace.doTheMath();
-                g.Clear(Color.White);
-                
-                if (checkBox1.Checked == true)
+                if (workplace.GornaGranica == 0 && workplace.DolnaGranica == 0 && workplace.LewaGranica == 0 && workplace.PrawaGranica == 0)
                 {
-                    g.DrawLine(pen, workplace.lewo, workplace.gora, workplace.prawo, workplace.gora);
-                    g.DrawLine(pen, workplace.prawo, workplace.gora, workplace.prawo, workplace.dol);
-                    g.DrawLine(pen, workplace.prawo, workplace.dol, workplace.lewo, workplace.dol);
-                    g.DrawLine(pen, workplace.lewo, workplace.dol, workplace.lewo, workplace.gora);
+                    MessageBox.Show("Na przynajmniej jednej granicy musi być potencjał różny od zera!!!",
+                                        "Błędne Dane!!!",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
                 }
-
-                g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
-                g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
-                g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
-                
-
-                if (checkBox2.Checked == true)
+                else
                 {
-                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
-                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
-                    g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
-                    g.DrawString(workplace.minValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo, (float)workplace.dol + 50), new Size(40, 20)));
-                    g.DrawString(workplace.maxValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo + 200, (float)workplace.dol + 50), new Size(40, 20)));
+                    label5.Text = "Stan: Pracuje";
+
+                    workplace.doTheMath();
+                    g.Clear(Color.White);
+
+                    if (checkBox1.Checked == true)
+                    {
+                        g.DrawLine(pen, workplace.lewo, workplace.gora, workplace.prawo, workplace.gora);
+                        g.DrawLine(pen, workplace.prawo, workplace.gora, workplace.prawo, workplace.dol);
+                        g.DrawLine(pen, workplace.prawo, workplace.dol, workplace.lewo, workplace.dol);
+                        g.DrawLine(pen, workplace.lewo, workplace.dol, workplace.lewo, workplace.gora);
+                    }
+
+                    g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+                    g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+                    g.DrawImage(workplace.wynik, workplace.lewo + 1, workplace.gora + 1);
+
+
+                    if (checkBox2.Checked == true)
+                    {
+                        g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                        g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                        g.DrawImage(workplace.Skala, workplace.lewo, workplace.dol + 25);
+                        g.DrawString(workplace.minValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo, (float)workplace.dol + 50), new Size(40, 20)));
+                        g.DrawString(workplace.maxValue.ToString(), this.Font, brush, new RectangleF(new PointF((float)workplace.lewo + 200, (float)workplace.dol + 50), new Size(40, 20)));
+                    }
+
+
+                    label3.Text = "ilość iteracji: " + workplace.iteracje;
+                    label4.Text = "Obliczenia trwały: " + workplace.czas.Minutes + " minut " + workplace.czas.Seconds + " sekund";
+                    label5.Text = "Stan: Skończył";
+                    //flag = 0;
                 }
-
-
-                label3.Text = "ilość iteracji: " + workplace.iteracje;
-                label4.Text = "Obliczenia trwały: " + workplace.czas.Minutes + " minut " + workplace.czas.Seconds + " sekund";
-                label5.Text = "Stan: Skończył";
-                //flag = 0;
             }
         }
 

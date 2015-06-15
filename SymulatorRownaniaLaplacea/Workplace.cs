@@ -21,7 +21,7 @@ namespace SymulatorRownaniaLaplacea
         private Bitmap mapaWartosci;
         private decimal[,] przestrzenRownania;
         private int maxX, maxY, minX, minY;
-        private const decimal e = 0.0001M;
+        private const decimal e = 0.000001M;
         private int iloscIteracji;
         private TimeSpan dlugosc;
         private Bitmap skala;
@@ -311,7 +311,7 @@ namespace SymulatorRownaniaLaplacea
 
             Stopwatch stoper = Stopwatch.StartNew();
 
-            while ((ileSpelnone < iloscPunktow/2 || iloscIteracji<2500) && iloscIteracji < 10000)
+            while (ileSpelnone < iloscPunktow)//2 || iloscIteracji<2500) && iloscIteracji < 10000)
             {
                 ileSpelnone = 0;
                 
